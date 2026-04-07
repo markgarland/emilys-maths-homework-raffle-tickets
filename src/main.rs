@@ -4,7 +4,9 @@ fn main() {
 
     println!();
     println!("Ticket is odd");
-    tickets.retain(|t| { t % 2 == 1 });
+    tickets.retain(|t| {
+        vec![1,3,5,7,9].contains(&get_ones(t))
+    });
     print_tickets(&tickets);
 
     println!();
@@ -15,23 +17,19 @@ fn main() {
     println!();
     println!("Ticket in the tens place is twice the digit in the hundreds place");
     tickets.retain(|t| {
-        let hundreds = get_number_at_index(t, 2);
-        let tens = get_number_at_index(t, 1);
-
         // filter zeroes
-        hundreds != 0 && tens != 0 && 2*hundreds == tens
+        get_hundreds(t) != 0 && get_tens(t) != 0 && 2*get_hundreds(t) == get_tens(t)
     });
     print_tickets(&tickets);
 
     println!();
     println!("The digit in the ones place is 5 more than the digit in the tens place");
     tickets.retain(|t| {
-        let ones = get_number_at_index(t, 0);
-        let tens = get_number_at_index(t, 1);
-        ones == tens + 5
+        get_ones(t) == get_tens(t) + 5
     });
     print_tickets(&tickets);
 }
+
 
 fn print_tickets(tickets: &Vec<u16>) {
     println!("Tickets - {} left - [{:?}]", tickets.iter().count(), format_tickets(tickets));
@@ -40,6 +38,10 @@ fn print_tickets(tickets: &Vec<u16>) {
 fn format_tickets(tickets: &Vec<u16>) -> Vec<String> {
     tickets.iter().map(|t| format!("{:03}", t)).collect()
 }
+
+fn get_ones(t: &u16) -> u8 { get_number_at_index(t, 0) }
+fn get_tens(t: &u16) -> u8 { get_number_at_index(t, 1) }
+fn get_hundreds(t: &u16) -> u8 { get_number_at_index(t, 2) }
 
 fn get_number_at_index(number: &u16, index: u32) -> u8 {
     ((number / 10_u16.pow(index)) % 10) as u8
